@@ -1,0 +1,4 @@
+form.form-inline .form-group .controls input[type="submit"],
+form.form-inline .form-group .controls input[type="button"]{
+    margin: 12px 0 0 10px;
+}
