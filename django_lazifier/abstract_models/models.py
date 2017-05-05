@@ -77,5 +77,6 @@ class OwnerModel(models.Model):
         abstract = True
 
     def save(self, *args, owner=None, **kwargs):
-        self.owner = owner
+        if owner is not None:
+            self.owner = owner
         return super().save(*args, **kwargs)

@@ -124,12 +124,20 @@ class Frm:
     def order_fields(cls, form_instance, field_list: list):
         """
         Reorder the fields based on the specified list (skip if not in the current field)
+
+        :type form_instance: Form|ModelForm
         :param form_instance:
         :param field_list:
         :return:
         """
-        form_instance.fields = OrderedDict([(f, form_instance.fields[f])
-                                            for f in field_list if f in form_instance.fields])
+        not_in_list = OrderedDict([(key, field)
+                                            for key, field in form_instance.fields.items() if key not in field_list])
+
+        fields = OrderedDict([(f, form_instance.fields[f])
+                              for f in field_list
+                              if f in form_instance.fields])
+        fields.update(not_in_list)
+        form_instance.fields = fields
 
     @classmethod
     def set_flow_layout(cls, form, layout_definitions, strict=False):
@@ -212,6 +220,7 @@ class Frm:
         """
         Determine if the value is a valid field choice value. If value is None use the field data from the form.
 
+        :type form_instance: Form|ModelForm
         :param form_instance:
         :param field_name:
         :param value:
@@ -235,6 +244,7 @@ class Frm:
         """
         Make all the specified fields as required.
 
+        :type form_instance: Form|ModelForm
         :param form_instance:
         :param field_list:  if None, make all fields as required
         :return:
@@ -249,6 +259,7 @@ class Frm:
         Make all the specified fields as readonly (readonly display text and still submit with the form).
         *** Remember to add the display "Select" fields to your layout. (ie <readonly_field>_display)
 
+        :type form_instance: Form|ModelForm
         :param form_instance:
         :param field_list:  if None, make all fields as readonly.
         """
@@ -343,3 +354,16 @@ class Frm:
             if settings.DEBUG:
                 p('Exception: %s' % ex)
             return default_value
+
+    @classmethod
+    def stage_audit_dict(cls, form):
+        """
+        Call the model default 'get_audit_dict()' function to prepare for the audit stage data.
+
+        :type form: Form|ModelForm
+        :param form:
+        """
+        instance = Obj.getattr(form, 'instance', None)
+        if instance and instance.pk and Obj.has_func(instance, 'get_audit_dict'):
+            instance._staged_data_point = instance.get_audit_dict()
+# endregion
