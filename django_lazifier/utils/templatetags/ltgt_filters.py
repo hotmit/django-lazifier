@@ -389,6 +389,20 @@ def as_css_id(the_str, post_fix=None):
 
 
 @register.filter
+def row_checkbox(data, css_classes='row-checkbox'):
+    """
+    Create a checkbox based on
+
+    :param data: data-value="data"
+    :param css_classes: the class to put on the checkbox.
+    :return:
+    """
+    result = '<input type="checkbox" class="{css_class}" data-value="{data}" />'\
+        .format(css_class=escape(css_classes), data=escape(data))
+    return mark_safe(result)
+
+
+@register.filter
 def as_checkbox(bool_value, classes=None):
     """
     Display bool as check mark
