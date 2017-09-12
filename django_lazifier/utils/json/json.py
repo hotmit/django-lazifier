@@ -1,22 +1,29 @@
-import sys
 from os import path
 import json
 from django.conf import settings
+from django_lazifier.utils.json.json_encoder import JsonEncoder, _parse_datetime
 from django_lazifier.utils.utils import p
 
 
 class Json:
     @classmethod
-    def from_str(cls, s, default_value=None):
+    def from_str(cls, s, default_value=None, parse_datetime=False):
         """
         Convert json string into dict
         """
         if s is None:
             return default_value
-        s = str(s)
+        s = str(s).strip()
+
+        # all json string must be {obj} or [array]
+        if not s.startswith('[') and not s.startswith('{'):
+            return default_value
 
         try:
-            return json.loads(s, encoding='utf-8')
+            if parse_datetime:
+                return json.loads(s, encoding='utf-8', object_hook=_parse_datetime)
+            else:
+                return json.loads(s, encoding='utf-8')
         except Exception as ex:
             if settings.DEBUG:
                 p('Exception: %s' % ex)
@@ -40,20 +47,20 @@ class Json:
             return default_value
 
     @classmethod
-    def to_json(cls, obj, pretty=False):
+    def to_json(cls, obj, pretty=False, default_value='{}'):
         """
         Convert an object to a json formatted string
         """
         if not obj:
-            return '{}'
+            return default_value
 
         try:
-            from django_lazifier.utils.json.json_encoder import JsonEncoder
-        except ImportError:
-            JsonEncoder = sys.modules[__package__ + '.JsonEncoder']
-
-        if not pretty:
-            json_str = json.dumps(obj, cls=JsonEncoder, skipkeys=True)
-        else:
-            json_str = json.dumps(obj, cls=JsonEncoder, skipkeys=True, indent=2)
-        return json_str
+            if not pretty:
+                json_str = json.dumps(obj, cls=JsonEncoder, skipkeys=True)
+            else:
+                json_str = json.dumps(obj, cls=JsonEncoder, skipkeys=True, indent=2)
+            return json_str
+        except Exception as ex:
+            if settings.DEBUG:
+                p('Exception: %s' % ex)
+            return default_value

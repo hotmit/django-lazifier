@@ -57,7 +57,9 @@ class Dct:
         """
         Convert dict to comma separated string.
             eg. name="John Doe", age="27"
+
         :param the_dict:
+        :param excludes: exclude all the keys specified
         :return: str
         """
         if not the_dict:
@@ -138,6 +140,63 @@ class Dct:
                     result[k + '_added'] = v
 
         return result
+
+    @classmethod
+    def add_prefix_to_keys(cls, dct, prefix: str):
+        """
+        Add the specified prefix to all the existing keys in the dict
+
+        :param dct: the dict
+        :param prefix: prefix to be append (no underscore will be added)
+        :rtype dict
+        """
+        if not dct:
+            return dct
+        result = OrderedDict() if isinstance(dct, OrderedDict) else {}
+        for k, v in dct.items():
+            result[prefix + k] = v
+        return result
+
+    @classmethod
+    def create_dict(cls, sample_dict, default_type=OrderedDict):
+        """
+        Create a blank dict based on teh type of the sample dict, whether to use OrderedDict or use the basic dict
+        :param sample_dict: {dict|OrderedDict|None}
+        :param default_type: {type}
+        :rtype {dict|OrderedDict}
+        """
+        if sample_dict is None:
+            return default_type()
+        if isinstance(sample_dict, OrderedDict):
+            return OrderedDict()
+        return {}
+
+    @classmethod
+    def key_maps(cls, dct: dict, key_maps: dict=None):
+        """
+        Rename the keys based on the key maps provided.
+
+        :param dct:
+        :param key_maps: mapping from old keys to new keys { 'old_key1': 'new_key1', ... }
+        :rtype dict
+        :return: if key_maps is none return dct, if dct is none return new OrderedDict
+        """
+        if not dct:
+            return OrderedDict()
+        if not key_maps:
+            return dct
+
+        result = cls.create_dict(dct)
+        for k, v in dct.items():
+            if k in key_maps:
+                new_key = key_maps[k]
+                result[new_key] = v
+            else:
+                result[k] = v
+
+        return result
+# endregion
+
 
 
 # region [ DefaultOrderedDict ]

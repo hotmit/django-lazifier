@@ -161,5 +161,5 @@ class Ajx:
     def _return_command(cls, cmd_dict: dict, options: dict):
         # convert key from redirect_url into redirectUrl
         cmd_dict['options'] = dict((Str.snake_to_camel(k), v) for k, v in options.items())
-        return HttpResponse(Json.to_json(cmd_dict))
-        # endregion
+        return HttpResponse(Json.to_json(cmd_dict, pretty=True))
+# endregion

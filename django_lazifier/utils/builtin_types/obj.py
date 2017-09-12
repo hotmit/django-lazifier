@@ -1,3 +1,5 @@
+from datetime import time, datetime
+import numbers
 import sys
 from collections import OrderedDict
 from django.db import models
@@ -54,7 +56,7 @@ class Obj:
                 verbose_result = OrderedDict()
                 verbose_names = Mdl.get_field_verbose(obj._meta.model, list(result.keys()))
                 for k, v in result.items():
-                    if k in exclude_list:       # have to exclude here, because after this key becomes the verbose ver.
+                    if exclude_list and k in exclude_list:       # have to exclude here, because after this key becomes the verbose ver.
                         continue
                     name = verbose_names[k] if k in verbose_names else k
                     verbose_result[name] = v
@@ -148,3 +150,13 @@ class Obj:
             obj = val
 
         return obj
+
+    @classmethod
+    def has_value(cls, value):
+        """
+        This determine value has display-able value.
+            eg. 0 evaluated to false, but still a valid value to display.
+        :param value: The value to test
+        """
+        return bool(isinstance(value, numbers.Number) or isinstance(value, time) or \
+               isinstance(value, datetime) or value)

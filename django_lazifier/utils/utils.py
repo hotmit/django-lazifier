@@ -1,3 +1,4 @@
+from datetime import datetime
 import pprint
 import inspect
 from os import path
@@ -7,6 +8,12 @@ from django.conf import settings
 import json
 import os
 import re
+import pytz
+import shutil
+from django_lazifier.utils.builtin_types.datetime import Dt
+from django_lazifier.utils.builtin_types.dict import Dct
+from django_lazifier.utils.builtin_types.obj import Obj
+from django_lazifier.utils.json.json_encoder import JsonEncoder
 
 try:
     from django.db.models.query import ValuesQuerySet
@@ -19,10 +26,39 @@ def log_exception(exception):
         p('Exception: %s' % exception)
 
 # region [ Print Function ]
+def d(obj, header='', indent=2, **kwargs):
+    """
+    Var dumps
+
+    :param obj: the object you want to print
+    :param indent: indent the json output
+    :param header: the text in front of the printout of the object
+    :param kwargs: any custom argument to mark the name or key related to the object
+    """
+    custom_param = ''
+    if kwargs:
+        custom_param = ' (%s)' % ', '.join(['{}={}'.format(k, v) for k, v in kwargs.items()])
+
+    if type(obj) is str or type(obj) is int or type(obj) is float:
+        if header:
+            print('{}{} -> {}'.format(header, custom_param, str(obj)))
+        else:
+            print(str(obj))
+        return
+
+    if not isinstance(obj, list) and not isinstance(obj, dict):
+        obj = Obj.get_dict(obj)
+
+    if header:
+        print('{}{} -> '.format(header, custom_param))
+    print(json.dumps(obj, cls=JsonEncoder, skipkeys=True, indent=indent))
+
+
 def p(*args, **kwargs):
     """
     Pretty print the object for debug
-    :param obj:
+    :param kwargs:
+    :param args:
     :return:
     """
     (frame, filename, line_number,
@@ -72,10 +108,23 @@ def p(*args, **kwargs):
 # endregion
 
 
-# region [ IOFunc ]
+# region [ Input & Output ]
 class IOFunc:
+    """
+    General IO function. eg. File reading/writing
+    """
+    TZ_UTC = pytz.utc
+    TZ_LOG = pytz.timezone('America/New_York')
+
     @classmethod
     def get_abs_path(cls, relative_root, relative_path):
+        """
+        Get the absolute path of the file
+
+        :param relative_root: the reference root of the relative path
+        :param relative_path: the relative path to the root
+        :rtype: str
+        """
         rel_dir = path.dirname(path.abspath(relative_root))
         return path.join(rel_dir, relative_path)
 
@@ -114,7 +163,8 @@ class IOFunc:
     @classmethod
     def write_file(cls, file_path, content):
         """
-        Write text to a file
+        Write text to a file (overwrite if file already exist)
+
         :param file_path:
         :param content:
         :return: bool
@@ -264,17 +314,120 @@ class IOFunc:
                       reverse=reverse)
 
     @classmethod
-    def move_file(cls, src_file, target_folder):
+    def move_file(cls, src_file, target_folder, overwrite=True):
         """
         Move file to target folder
 
         :param src_file:
         :param target_folder:
-        :return:
+        :param overwrite:
+        :rtype: str
+        :return: return the location of the new path
         """
         IOFunc.create_directories(target_folder)
         file_name = os.path.basename(src_file)
 
-        os.rename(src_file, os.path.join(target_folder, file_name))
+        target_file = os.path.join(target_folder, file_name)
 
+        if IOFunc.file_exist(target_file) and overwrite:
+            os.remove(target_file)
+
+        os.rename(src_file, target_file)
+        return target_file
+
+    @classmethod
+    def remove_directory(cls, folder_path):
+        """
+        Remove folder (it doesn't have to be emptied)
+
+        :param folder_path:
+        :return:
+        """
+        try:
+            shutil.rmtree(folder_path)
+            return True
+        except Exception as ex:
+            return False
+
+    @classmethod
+    def remove_file(cls, file_path):
+        """
+        Remove file
+
+        :param file_path: full file path
+        :rtype: bool
+        """
+
+        if cls.file_exist(file_path):
+            try:
+                os.remove(file_path)
+            except Exception as ex:
+                return False
+        return True
+
+    @classmethod
+    def rename_directory(cls, old, dst):
+        """
+        Rename a directory.
+
+        :param old: full path src
+        :param dst: full path destination
+        :return:
+        """
+        try:
+            os.rename(old, dst)
+            return True
+        except Exception as ex:
+            return False
+
+    @classmethod
+    def write_log(cls, log_file_path, log_text, log_max_size=5, **kwargs):
+        """
+        Write log to file
+
+        :param log_file_path: full file path
+        :param log_text: the text content
+        :param log_max_size: max size(in mb) of log file before move log file to .bak
+        :param kwargs: any key, value item you want to append to the text field
+        """
+        try:
+            if isinstance(log_text, Exception):
+                try:
+                    frames = inspect.getouterframes(inspect.currentframe())
+                    frame, filename, line_number, function_name, lines, index = frames[1]
+
+                    if function_name == 'write_log' and len(frames) > 2:
+                        frame, filename, line_number, function_name, lines, index = frames[2]
+
+                    log_text = 'Exception: {msg} ({filename}, {function_name}()::{line_number})'\
+                        .format(msg=str(log_text), filename=path.basename(filename),
+                                function_name=function_name, line_number=line_number)
+                except Exception as ex:
+                    print('IOFunc.write_log(): ' + ex.__str__())
+
+            if kwargs:
+                if log_text:
+                    log_text = '. '.join([str(log_text), Dct.to_string(kwargs)])
+                else:
+                    log_text = Dct.to_string(kwargs)
+
+            dir_path = os.path.dirname(log_file_path)
+            cls.create_directories(dir_path)
+
+            now = datetime.utcnow()
+            utc_now = Dt.replace_tzinfo(now, cls.TZ_UTC)
+            log_tz_time = utc_now.astimezone(cls.TZ_LOG)
+
+            log_text = '{date:%Y-%m-%d %H:%M:%S %Z%z}\t{content}\n'.format(date=log_tz_time, content=log_text)
+
+            if cls.file_exist(log_file_path):
+                max_size_in_byte = log_max_size * 1048576
+                if os.path.getsize(log_file_path) > max_size_in_byte:
+                    bak_file_path = log_file_path + '.bak'
+                    cls.remove_file(bak_file_path)
+                    os.rename(log_file_path, bak_file_path)
+
+            cls.append_file(log_file_path, log_text)
+        except Exception as ex:
+            print('IOFunc.write_log(): ' + ex.__str__())
 # endregion

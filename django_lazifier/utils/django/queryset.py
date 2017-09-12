@@ -6,6 +6,10 @@ from django_lazifier.utils.json.json import Json
 
 
 class QrSt:
+    """
+    QuerySet helper methods
+    """
+
     @classmethod
     def to_json(cls, qs: QuerySet, related_list: list = None):
         """

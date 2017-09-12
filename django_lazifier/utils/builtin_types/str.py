@@ -44,6 +44,7 @@ class Str:
         Contains/contains_all - check to see if args is in they haystack
         :param haystack:
         :param args: the hay stack must contains all these
+        :param case: case sensitive search
         :return:
         """
         try:
@@ -194,6 +195,11 @@ class Str:
 
     @classmethod
     def snake_to_title(cls, the_str):
+        """
+        Convert snake case string to title
+        :param the_str:
+        :return:
+        """
         if not the_str:
             return the_str
 
@@ -344,3 +350,15 @@ class Str:
             if settings.DEBUG:
                 p('Exception: %s' % ex)
             return default_value
+
+    @classmethod
+    def title_to_snake(cls, the_str: str):
+        """
+        Convert title case to snake case ('Hello World' => 'hello_world')
+        :param the_str:
+        :return:
+        """
+        if not the_str:
+            return the_str
+        the_str = cls.break_camel(the_str)
+        return the_str.lower().replace(' ', '_')

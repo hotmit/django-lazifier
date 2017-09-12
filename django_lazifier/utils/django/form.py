@@ -216,7 +216,7 @@ class Frm:
                 form.helper.layout = helper_layout
 
     @classmethod
-    def is_valid_choice(cls, form_instance: Form, field_name, value=None):
+    def is_valid_choice(cls, form_instance, field_name, value=None):
         """
         Determine if the value is a valid field choice value. If value is None use the field data from the form.
 
@@ -240,7 +240,7 @@ class Frm:
         return False
 
     @classmethod
-    def set_as_required(cls, form_instance: Form, field_list: list = None):
+    def set_as_required(cls, form_instance, field_list: list=None):
         """
         Make all the specified fields as required.
 
@@ -254,7 +254,7 @@ class Frm:
                 field.required = True
 
     @classmethod
-    def set_as_readonly(cls, form_instance: Form, field_list: list = None):
+    def set_as_readonly(cls, form_instance, field_list: list=None):
         """
         Make all the specified fields as readonly (readonly display text and still submit with the form).
         *** Remember to add the display "Select" fields to your layout. (ie <readonly_field>_display)
@@ -301,11 +301,12 @@ class Frm:
             form_instance.fields = new_fields
 
     @classmethod
-    def set_as_disabled(cls, form_instance: Form, field_list: list = None):
+    def set_as_disabled(cls, form_instance, field_list: list=None):
         """
         Make all the specified fields as disabled (disabled display text but doesn't
         submit with the form, ie so data on server side).
 
+        :type form_instance: Form|ModelForm
         :param form_instance:
         :param field_list:  if None, make all fields as readonly
         """
@@ -314,10 +315,12 @@ class Frm:
                 field.widget.attrs['disabled'] = True
 
     @classmethod
-    def set_widget_class(cls, form_instance: Form, field_list: list = None, css_class: str = ''):
+    def set_widget_class(cls, form_instance, field_list: list=None, css_class: str = ''):
         """
         Assign css class to the specified field_list
 
+        :param css_class: assign the specified classes string
+        :type form_instance: Form|ModelForm
         :param form_instance:
         :param field_list:
         """
@@ -326,9 +329,11 @@ class Frm:
                 field.widget.attrs['class'] = css_class
 
     @classmethod
-    def get_data_or_initial(cls, form_instance: Form, field_name: str, default_value=None, to_int=False):
+    def get_data_or_initial(cls, form_instance, field_name: str, default_value=None, to_int=False):
         """
         Get value from data first, if not found then get it from the form initial value.
+
+        :type form_instance: Form|ModelForm
         :param form_instance:
         :param field_name:
         :param default_value:

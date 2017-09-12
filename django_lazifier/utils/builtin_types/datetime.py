@@ -1,4 +1,5 @@
-from datetime import tzinfo, datetime, time
+import calendar
+from datetime import tzinfo, datetime, time, date
 from django.utils import timezone
 from django_lazifier.utils.utils import log_exception
 
@@ -41,7 +42,7 @@ class Dt:
                 return default_value
 
             if tz_info is not None:
-                dt = dt.replace(tzinfo=tz_info)
+                dt = cls.replace_tzinfo(dt, tz_info)
             return dt
         except ValueError:
             return default_value
@@ -59,8 +60,27 @@ class Dt:
         return False
 
     @classmethod
+    def get_time(cls, time_str: str, expected_formats, default_value=None):
+        """
+        Try to parse the time string using specified formats.
+
+        :param time_str:
+        :param expected_formats {tuple|list}:
+        :param default_value:
+        :return:
+        """
+        for tf in expected_formats:
+            try:
+                time_value = datetime.strptime(time_str, tf)
+                if time_value:
+                    return time_value.time()
+            except:
+                pass
+        return default_value
+
+    @classmethod
     def localize_datetime(cls, date_time: datetime, from_tz: tzinfo, to_tz: tzinfo, include_tzinfo=False):
-        date_time = date_time.replace(tzinfo=from_tz)
+        date_time = cls.replace_tzinfo(date_time, from_tz)
         date_time = date_time.astimezone(to_tz)
         if not include_tzinfo:
             date_time = date_time.replace(tzinfo=None)
@@ -108,6 +128,14 @@ class Dt:
 
     @classmethod
     def diff_in_days(cls, datetime_start: datetime, datetime_end: datetime, default_value=-1):
+        """
+        Days of (end - start)
+
+        :param datetime_start:
+        :param datetime_end:
+        :param default_value:
+        :return:
+        """
         if not datetime_start or not datetime_end:
             return default_value
 
@@ -137,7 +165,7 @@ class Dt:
         :param dt:
         :return:
         """
-        return dt.strftime('%Y-%m-%d %H:%M:%S %Z').strip()
+        return dt.strftime('%Y-%m-%d %H:%M:%S %z').strip()
 
     @classmethod
     def from_sql(cls, datetime_str, tz_info=None):
@@ -146,3 +174,101 @@ class Dt:
     @classmethod
     def to_display_date(cls, dt):
         return dt.strftime('%Y/%m/%d %H:%M:%S')
+
+    @classmethod
+    def replace_tzinfo(cls, dt: datetime, tzinfo: tzinfo, is_dst=True):
+        """
+        This method does not convert timezone, it simply set the timezone to specified timezone.
+        :param date_time: if this datetime has tzinfo, it will be overridden
+        :param tzinfo: timezone
+        :rtype: datetime
+        """
+
+        # datetime.replace(tzinfo=user_tz)  => sometime this change the datetime value
+        # http://stackoverflow.com/questions/27531718/datetime-timezone-conversion-using-pytz
+        # use localize instead
+
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+
+        local = tzinfo.localize(dt, is_dst=is_dst)
+        return tzinfo.normalize(local)
+
+    @classmethod
+    def convert_tz(cls, dt, timezone, is_dst=True):
+        assert dt.tzinfo, 'The datetime must be time aware, tzinfo cannot be None'
+
+        src_tz = dt.tzinfo
+        local_dt = dt.replace(tzinfo=None)
+        src_dt = src_tz.normalize(src_tz.localize(local_dt, is_dst=is_dst))
+        return src_dt.astimezone(timezone)
+
+    @classmethod
+    def to_epoch(cls, dt, default_value=None):
+        """
+        Convert date or datetime into epoch
+
+        :type dt: {date|datetime}
+        :param default_value:
+        :rtype: int
+        """
+        if dt is None or (not isinstance(dt, date) and not isinstance(dt, datetime)):
+            return default_value
+
+        if isinstance(dt, date):
+            dt = datetime.combine(dt, datetime.min.time())
+
+        origin = datetime(1970, 1, 1)
+        if dt.tzinfo is not None:
+            origin = cls.replace_tzinfo(origin, timezone.utc)
+        return int((dt - origin).total_seconds())
+
+    @classmethod
+    def from_epoch(cls, epoch):
+        """
+        Covert epoch into datetime object (utc)
+        :rtype epoch: {int|float}
+        :rtype: datetime
+        """
+        if epoch is not None:
+            return datetime.utcfromtimestamp(epoch)
+        return None
+
+    @classmethod
+    def get_first_day_of_month(cls, dt, replace_time=True):
+        if dt is None:
+            return None
+        dt = dt.replace(day=1)
+        if replace_time:
+            dt = dt.replace(hour=0, minute=0, second=0)
+        return dt
+
+    @classmethod
+    def get_last_day_of_month(cls, dt, replace_time=True):
+        """
+        return the date at the end of the specified datetime's month
+
+        :type dt: {datetime}
+        :param replace_time:
+        :rtype: datetime
+        """
+        if dt is None:
+            return None
+        month, last_day_of_month = calendar.monthrange(dt.year, dt.month)
+        dt = dt.replace(day=last_day_of_month)
+        if replace_time:
+            dt = dt.replace(hour=23, minute=59, second=59)
+        return dt
+
+    @classmethod
+    def get_first_and_last_day_of_month(cls, dt, replace_time=True):
+        """
+        return (first, last) tuple
+
+        :param dt:
+        :param replace_time:
+        :rtype: tuple
+        """
+        first = cls.get_first_day_of_month(dt, replace_time)
+        last = cls.get_last_day_of_month(dt, replace_time)
+        return first, last

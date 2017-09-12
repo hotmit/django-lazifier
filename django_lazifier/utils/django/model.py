@@ -1,11 +1,13 @@
 from collections import OrderedDict
 from django.db import models, transaction
 from django.db.models import Manager, Model
+from django_lazifier.utils.builtin_types.dict import Dct
 from django_lazifier.utils.builtin_types.iter import index_iter
 from django_lazifier.utils.builtin_types.obj import Obj
 from django_lazifier.utils.builtin_types.str import Str
 
 
+# noinspection PyProtectedMember
 class Mdl:
     @classmethod
     def has_field(cls, model: models.Model, field_name: str):
@@ -60,7 +62,7 @@ class Mdl:
         return [f.attname for f in model._meta.fields]
 
     @classmethod
-    def get_related_field(cls, model: models.Model, filter_list=None, exclude_list=None, verbose_key=False,
+    def get_related_models(cls, model: models.Model, filter_list=None, exclude_list=None, verbose_key=False,
                           related_fields=None):
         if not related_fields:
             return OrderedDict()
@@ -80,7 +82,79 @@ class Mdl:
         return result
 
     @classmethod
-    def get_dict(cls, model: models.Model, filter_list=None, exclude_list=None, verbose_key=False, related_fields=None):
+    def get_id_name_pair(cls, instance: models.Model, named_field=None, prefix=''):
+        """
+        Get id and name of a model.
+
+        :param instance: instance of a model
+        :param named_field: if you want to use non-standard named field, eg. name_field="nick_name"
+        :param prefix: prefix this name to the result key. eg. { facility_id:, facility_name: }
+        :return:
+        :rtype: dict
+        """
+        if prefix:
+            prefix += '_'
+
+        if not instance:
+            return {
+                prefix + 'id': None,
+                prefix + 'name': str(None),
+            }
+
+        name_attrs = ['name', 'sensor_name', 'username']
+
+        if named_field:
+            print(named_field)
+            name_attrs = [named_field] + name_attrs
+
+        try:
+            for attr in name_attrs:
+                name = Obj.getattr(instance, attr, 'NOT_FOUND!')
+                if name != 'NOT_FOUND!':
+                    return {
+                        prefix + 'id': instance.pk,
+                        prefix + 'name': name,
+                    }
+        except:
+            pass
+
+        return {
+            prefix + 'id': instance.pk,
+            prefix + 'name': str(instance),
+        }
+
+    @classmethod
+    def get_related_model_names(cls, model: models.Model, related_names: list=None):
+        """
+        Extract name from foreign keys, foreign and m2m fields
+                eg. { facility_id: 10, facility_name: 'Trenton', zone_id:, zone_name:, ... }
+
+        :param model:
+        :param related_names: either foreign key field name or a tuple (field_name, 'the-field-contain-the-name')
+        :return:
+        """
+        if not related_names:
+            return OrderedDict()
+
+        related_fields = related_names
+        result = OrderedDict()
+
+        for rf in related_names:
+            named_field = None
+            if isinstance(rf, tuple):
+                rf, named_field = rf
+
+            rel_field = Obj.getattr(model, rf, None)
+            if rel_field and isinstance(rel_field, Manager):
+                value_list = [cls.get_id_name_pair(md, named_field=named_field) for md in rel_field.all()]
+                result[rf] = value_list
+            else:
+                result.update(cls.get_id_name_pair(rel_field, named_field=named_field, prefix=rf))
+        return result
+
+    @classmethod
+    def get_dict(cls, model: models.Model, filter_list=None, exclude_list=None, verbose_key=False, related_fields: list=None,
+                 related_names: list=None, key_maps: dict=None, get_display=False):
         """
         Extract the values from the instance of the model,
             if the fields is specified then remove other fields not in the list.
@@ -89,15 +163,29 @@ class Mdl:
         :param model: The model
         :param filter_list:
         :param exclude_list:
-        :param verbose_key:
-        :param related_fields:
+        :param verbose_key: get the verbose of the field name, ie name would be _('Name')
+        :param related_fields: merge the related model into the this result dict
+        :param related_names: just get the name of the related model instead fo the entire model like related_fields
+                                    field name or tuple (field_name, the_field_contain_the_name)
+                                    eg. ['facility', 'zone', ('sensoralarmmap_set', 'alarm_alert_link.name')]
+        :param key_maps: change the keys of the dict to diff value { 'old_key1': 'new_key1', ... }
+        :param get_display: if a get_<name>_display exist, use that to get the verbose name
         :return:
+        :rtype: dict
         """
-        values = Obj.get_dict(model, filter_list=filter_list, exclude_list=exclude_list, verbose_key=verbose_key)
-        rel = Mdl.get_related_field(model, filter_list=filter_list, exclude_list=exclude_list, verbose_key=verbose_key,
+        values = Obj.get_dict(model, filter_list=filter_list, exclude_list=exclude_list, verbose_key=verbose_key,
+                              get_display=get_display)
+
+        rel = Mdl.get_related_models(model, filter_list=filter_list, exclude_list=exclude_list, verbose_key=verbose_key,
                                     related_fields=related_fields)
         if rel:
             values.update(rel)
+
+        names = Mdl.get_related_model_names(model, related_names)
+        if names:
+            values.update(names)
+
+        values = Dct.key_maps(values, key_maps)
 
         return values
 
@@ -107,7 +195,7 @@ class Mdl:
 
         for fn in field_attnames:
             try:
-                field = model._meta.get_field(fn)
+                field = model._meta.get_field_by_name(fn)[0]
 
                 if hasattr(field, 'verbose_name') and field.verbose_name:
                     result[fn] = field.verbose_name.title
@@ -123,8 +211,7 @@ class Mdl:
     @classmethod
     def get_display_name(cls, model: Model, field_name, default_value=None):
         field_key = Obj.getattr(model, field_name)
-        model_field_names = Mdl.get_field_names(model)
-        if field_key is None or field_name not in model_field_names:
+        if field_key is None:
             return default_value
         field = model._meta.get_field(field_name)
         choices = Obj.getattr(field, 'choices')
@@ -136,7 +223,7 @@ class Mdl:
             if k == field_key:
                 return v
 
-        return Obj.getattr(model, 'get_%s_display' % field_name, default_value)
+        return default_value
 
     @classmethod
     @transaction.atomic(savepoint=True)
@@ -164,3 +251,21 @@ class Mdl:
                 row[fn] = d[index0]
             data_list.append(model(**row))
         manager.bulk_create(data_list)
+
+    @classmethod
+    def get_related_name_fields(cls, instance: models.Model, excluded_list=None):
+        """
+        Get all the related field names without the _id
+
+        :param instance:
+        :param excluded_list:
+        :return:
+        """
+        if excluded_list is None:
+            excluded_list = ['site_id']
+        elif excluded_list:
+            excluded_list = [fn + '_id' for fn in excluded_list]
+
+        attrs = cls.get_field_attnames(instance)
+        related_names = [fn.replace('_id', '') for fn in attrs if fn.endswith('_id') and fn not in excluded_list]
+        return related_names

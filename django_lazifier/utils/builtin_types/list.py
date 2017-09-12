@@ -1,9 +1,8 @@
 from collections import OrderedDict
 import random
-from django.conf import settings
 from django_lazifier.utils.builtin_types.obj import Obj
 from django_lazifier.utils.builtin_types.str import Str
-from django_lazifier.utils.utils import p
+from django_lazifier.utils.utils import log_exception
 
 
 class Lst:
@@ -222,6 +221,10 @@ class Lst:
     def prep_select_optgroups(cls, the_list, opt_groups: list, value_attr, display_attr, none_value_label):
         """
         Prep list to be use as a choice for the ChoiceField
+
+            eg. sensor_choices = Lst.prep_select_optgroups(sensors, ['facility.name', 'zone.name'],
+                                               'id', 'sensor_name', _('Unassigned Sensors'))
+
         :param the_list: ValueQuerySet, QuerySet or list
         :param opt_groups: the group column/attr name or index
         :param value_attr: the option value
@@ -243,13 +246,15 @@ class Lst:
         return groups
 
     @classmethod
-    def get_unique(cls, the_list, default_value=None):
+    def get_unique(cls, the_list, default_value=None, unique_attr=None):
         """
         Get a list of unique values in the list, default_value is [] if default_value is set to None.
 
         :param the_list:
         :param default_value: if none value is []
-        :return:
+        :param unique_attr: select your own unique attribute (in case when the object is unhashable
+                                or you want your own attr)
+        :rtype list
         """
         if default_value is None:
             default_value = []
@@ -261,12 +266,21 @@ class Lst:
             # Src: http://stackoverflow.com/questions/480214
             #       /how-do-you-remove-duplicates-from-a-list-in-python-whilst-preserving-order
             # Src: http://www.peterbe.com/plog/uniqifiers-benchmark
-            added_list = set()
-            add_to_added_list = added_list.add  # this static ref for performance reason
-            return [x for x in the_list if not (x in added_list or add_to_added_list(x))]
+            if unique_attr is None:
+                added_list = set()
+                add_to_added_list = added_list.add  # this static ref for performance reason
+                return [x for x in the_list if not (x in added_list or add_to_added_list(x))]
+
+            result = []
+            existed_item = {}               # dict is much faster than list when checking existence of a key
+            for itm in the_list:
+                key = Obj.getattr(itm, unique_attr)
+                if key not in existed_item:
+                    result.append(itm)
+                    existed_item[key] = None
+            return result
         except Exception as ex:
-            if settings.DEBUG:
-                p('Exception: %s' % ex)
+            log_exception(ex)
             return default_value
 
     @classmethod
@@ -302,3 +316,29 @@ class Lst:
         :return:
         """
         return Lst.any(args, lambda x: x in the_list)
+
+    @classmethod
+    def unordered_list_equals(cls, lst_a, lst_b):
+        if not isinstance(lst_a, list) or not isinstance(lst_b, list):
+            return False
+
+        if lst_a == lst_b:
+            return True
+
+        if len(lst_a) != len(lst_b):
+            return False
+
+        return set(lst_a) == set(lst_b)
+
+    @classmethod
+    def str_join(cls, lst, separator=', ', value_attr: str=None):
+        if not lst:
+            return ''
+
+        str_list = []
+        for itm in lst:
+            if value_attr is not None:
+                itm = Obj.getattr(itm, value_attr)
+            itm = str(itm)
+            str_list.append(itm)
+        return separator.join(str_list)
