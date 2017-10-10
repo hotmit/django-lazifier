@@ -3,7 +3,13 @@ from decimal import Decimal
 import re
 from django.conf import settings
 from django.template import defaultfilters
-from django_lazifier.utils.utils import p
+
+
+try:
+    from django_lazifier.utils.utils import p
+except Exception:
+    def p(*args, **kwargs):
+        print(args)
 
 
 class Str:
