@@ -12,7 +12,7 @@ USE_TZ = True
 USE_I18N = True
 USE_L10N = True
 LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'locale')
+    os.path.join(BASE_DIR, 'django_lazifier', 'locale')
 ]
 
 LANGUAGE_CODE = 'en'
