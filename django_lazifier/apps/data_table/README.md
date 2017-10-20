@@ -7,7 +7,7 @@
 * Optional Setting CRISPY_FAIL_SILENTLY = not DEBUG
 
 # Install
-* InstallApp 'ltgt_lib',
+* InstallApp 'django_lazifier',
 * InstallApp 'data_table',
 
 # DtActionButton

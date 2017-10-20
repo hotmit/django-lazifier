@@ -2,7 +2,7 @@
 * Shortcut: dt_form
 
 ```python
-from django_lazifier.ltgt_ext.apps.data_table.forms import DataTableCreateForm, DataTableUpdateForm
+from django_lazifier.**_ext.apps.data_table.forms import DataTableCreateForm, DataTableUpdateForm
 
 
 class $MODEL$CreateForm(DataTableCreateForm):
@@ -27,9 +27,9 @@ class $MODEL$UpdateForm($MODEL$CreateForm, DataTableUpdateForm):
 
 ```python
 from django.utils.translation import ugettext as _
-from django_lazifier.ltgt_ext.apps.data_table.data_table import DataTable
+from django_lazifier.**_ext.apps.data_table.data_table import DataTable
 from django.contrib.auth.decorators import login_required, permission_required
-from django_lazifier.ltgt_ext.apps.data_table.data_table_manager import DataTableManager
+from django_lazifier.**_ext.apps.data_table.data_table_manager import DataTableManager
 
 
 @login_required
