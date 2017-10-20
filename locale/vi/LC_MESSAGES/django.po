@@ -1,0 +1,221 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-20 11:57-0400\n"
+"PO-Revision-Date: 2017-10-20 12:07-0400\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: vi\n"
+"X-Generator: Poedit 1.8.12\n"
+
+#: .\django_lazifier\abstract_models\models.py:44
+msgid "created"
+msgstr "tạo"
+
+#: .\django_lazifier\abstract_models\models.py:45
+msgid "last modified"
+msgstr "Ngày sửa"
+
+#: .\django_lazifier\abstract_models\models.py:54
+msgid "enabled"
+msgstr "Kich hoạt"
+
+#: .\django_lazifier\abstract_models\models.py:63
+msgid "is active"
+msgstr "đang hoạt động"
+
+#: .\django_lazifier\abstract_models\models.py:72
+msgid "owner"
+msgstr "người sở hữu"
+
+#: .\django_lazifier\apps\data_table\data_table.py:324
+msgid "No records found."
+msgstr "Không tìm thấy dữ liệu"
+
+#: .\django_lazifier\apps\data_table\data_table.py:325
+#: .\django_lazifier\utils\django\form.py:33
+#: .\django_lazifier\utils\django\form.py:55
+msgid "Sorry, you do not have the permission to view this page."
+msgstr "Xin lỗi, bại không có quyền để xem chức năng này"
+
+#: .\django_lazifier\apps\data_table\data_table.py:326
+msgid "New"
+msgstr "Mới"
+
+#: .\django_lazifier\apps\data_table\data_table.py:327
+msgid "Edit"
+msgstr "Sửa"
+
+#: .\django_lazifier\apps\data_table\data_table.py:328
+msgid "Delete"
+msgstr "Xóa"
+
+#: .\django_lazifier\apps\data_table\data_table.py:329
+msgid "Actions"
+msgstr "Hành Động"
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:169
+msgid "The record you specified does not exist."
+msgstr "Dữ kiện bạn đưa không có trong hệ thống"
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:170
+msgid "Sorry, you do not have the permission to create this record."
+msgstr "Rất tiếc, bạn không có quyền tạo hồ sơ này"
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:171
+msgid "Sorry, you do not have the permission to update this record."
+msgstr "Rất tiếc, bạn không có quyền cập nhật hồ sơ này."
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:172
+msgid "Sorry, you do not have the permission to delete this record."
+msgstr "Rất tiếc, bạn không có quyền xóa bản ghi này."
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:334
+msgid "Dev Error: un-implemented mode or command ({mode}/{command})"
+msgstr "Lỗi Dev: chế độ không được triển khai hoặc lệnh ({mode} / {command})"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:7
+#: .\django_lazifier\utils\contants\choices.py:5
+msgid "Male"
+msgstr "Nam"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:8
+#: .\django_lazifier\utils\contants\choices.py:6
+msgid "Female"
+msgstr "Nữ"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:13
+msgid "name"
+msgstr "tên"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:14
+msgid "description"
+msgstr "miêu tả"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:15
+msgid "user"
+msgstr "người dùng"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:17
+msgid "gender"
+msgstr "giớ tính"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:18
+msgid "pin"
+msgstr "số mật"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:20
+msgid "modified timestamped"
+msgstr "ngày sửa"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:24
+msgid "Data Table Demo"
+msgstr "Demo của Data Table"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:26
+msgid "View Demo App"
+msgstr "Xem Demo"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:27
+msgid "Update Demo App"
+msgstr "Sửa Demo"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:28
+msgid "Delete Demo App"
+msgstr "Xóa Demo"
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:29
+msgid "Manage Demo App"
+msgstr "Quản lý Demo"
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Name"
+msgstr "Tên"
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "User"
+msgstr "Người dùng"
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Gender"
+msgstr "Giới tính"
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Pins"
+msgstr "Mật số"
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Date Modified"
+msgstr "Ngày sửa"
+
+#: .\django_lazifier\apps\data_table\forms.py:44
+msgid "Search"
+msgstr "Tìm"
+
+#: .\django_lazifier\apps\data_table\forms.py:64
+msgid "Start Date"
+msgstr "Ngày bắt đầu"
+
+#: .\django_lazifier\apps\data_table\forms.py:65
+msgid "End Date"
+msgstr "Ngày cuối"
+
+#: .\django_lazifier\apps\data_table\forms.py:94
+msgid "Status"
+msgstr "Trạng thái"
+
+#: .\django_lazifier\apps\data_table\forms.py:115
+#: .\django_lazifier\apps\data_table\forms.py:133
+msgid "Reset"
+msgstr "Đặt lại"
+
+#: .\django_lazifier\apps\data_table\forms.py:116
+msgid "Create"
+msgstr "Tạo"
+
+#: .\django_lazifier\apps\data_table\forms.py:134
+msgid "Update"
+msgstr "Sửa"
+
+#: .\django_lazifier\utils\contants\choices.py:7
+msgid "Other"
+msgstr "Khác"
+
+#: .\django_lazifier\utils\contants\choices.py:12
+#: .\django_lazifier\utils\contants\choices.py:23
+msgid "All"
+msgstr "Tất Cả"
+
+#: .\django_lazifier\utils\contants\choices.py:17
+msgid "Active"
+msgstr "Dang hoạt động"
+
+#: .\django_lazifier\utils\contants\choices.py:18
+msgid "Inactive"
+msgstr "Không hoạt động"
+
+#: .\django_lazifier\utils\django\ajax.py:155
+msgid "Error"
+msgstr "Lỗi"
+
+#: .\django_lazifier\utils\django\form.py:67
+msgid "Sorry, the record you specified does not exist."
+msgstr "Rất tiếc, bản ghi mà bạn chỉ định không tồn tại."
+
+#: .\django_lazifier\utils\templates\lazifier\table_filter\as_table_filter_sub_tables_layout.html:7
+msgid "Key"
+msgstr "Chìa"
+
+#: .\django_lazifier\utils\templates\lazifier\table_filter\as_table_filter_sub_tables_layout.html:8
+msgid "Value"
+msgstr "Giá trị"

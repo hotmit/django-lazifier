@@ -331,7 +331,9 @@ class DataTableManager(DataTablePermissions):
                     return result
                 else:
                     return render(self.request, 'data_table/data_table_html_content.html', {
-                        'result': _('Dev Error: un-implemented mode or command (%s/%s)') % (self.mode, self.command),
+                        'result': _('Dev Error: un-implemented mode or command ({mode}/{command})').format(
+                            mode=self.mode, command=self.command
+                        ),
                     })
         except Exception as ex:
             return Ajx.send_ajax_command('Exception: %s' % ex, display_method=Ajx.DisplayMethod.bs_dialog,
