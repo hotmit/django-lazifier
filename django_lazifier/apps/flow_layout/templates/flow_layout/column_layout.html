@@ -1,0 +1,8 @@
+{% load i18n %}{% load tz %}
+{% autoescape on %}
+    {% localtime on %}
+        <div{{ col.tags_string }}>
+            {{ content }}
+        </div>
+    {% endlocaltime %}
+{% endautoescape %}

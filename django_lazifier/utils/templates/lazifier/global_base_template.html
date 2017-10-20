@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Base Template</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'lazifier/vendor/data-tables/media/css/dataTables.bootstrap.min.css' %}"/>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="{% static 'lazifier/vendor/bootstrap-dialog/bootstrap-dialog.css' %}">
+    <link rel="stylesheet" href="{% static 'lazifier/vendor/jquery-ui/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lazifier/vendor/jquery-ui/jquery-ui.structure.min.css' %}">
+
+    <style>
+        main {
+            min-height: 700px;
+            width: 960px;
+            margin: 0 auto;
+        }
+    </style>
+
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+
+    {% block header_includes %}{% endblock %}
+</head>
+<body>
+    <main>
+        {% block main %}
+        {% endblock %}
+    </main>
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <script src="http://cdn.rawgit.com/nakupanda/bootstrap3-dialog/master/dist/js/bootstrap-dialog.min.js"></script>
+    <script src="http://cdn.rawgit.com/malsup/blockui/master/jquery.blockUI.js"></script>
+    <script src="http://cdn.rawgit.com/malsup/form/master/jquery.form.js"></script>
+
+    <script src="{% static 'lazifier/js/utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lazifier/vendor/data-tables/media/js/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lazifier/vendor/data-tables/media/js/dataTables.bootstrap.min.js' %}"></script>
+
+    {% block footer_includes %}{% endblock %}
+</body>
+</html>

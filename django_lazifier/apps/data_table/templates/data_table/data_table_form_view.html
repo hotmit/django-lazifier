@@ -1,0 +1,17 @@
+{% load i18n staticfiles lazifier_filters lazifier_tags tz crispy_forms_tags %}
+
+<div>
+    <div class="dt-ajax-container">
+        {% block dt_form_header %}
+            {# Put any script or any html above the form #}
+        {% endblock %}
+
+        {% block dt_form %}
+            {% crispy dt_tbl.form %}
+        {% endblock %}
+
+        {% block dt_form_footer %}
+            {# Put any script or any html below the form #}
+        {% endblock %}
+    </div>
+</div>

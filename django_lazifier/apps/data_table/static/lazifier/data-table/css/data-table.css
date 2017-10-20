@@ -1,0 +1,45 @@
+.dt-list-view {
+    width: 100%;
+}
+
+.dt-list-view .dt-cmd-buttons {
+    width: 100%;
+    text-align: right;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 7px;
+}
+
+.form-group .controls .radio {
+    margin-left: 2em;
+}
+
+.form-group {
+    margin-bottom: 8px;
+}
+
+.control-label {
+    margin-bottom: 3px;
+}
+
+form > div.form-group:last-child > div.controls {
+    padding-top: 10px;
+    text-align: right;
+}
+
+textarea.form-control {
+    max-height: 100px;
+}
+
+td.dt-cmd-buttons button {
+    margin-right: 5px;
+}
+
+form.dt-filter-form .dateinput {
+    max-width: 110px;
+}

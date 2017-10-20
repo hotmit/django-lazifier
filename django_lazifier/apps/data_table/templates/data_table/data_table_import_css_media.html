@@ -1,0 +1,11 @@
+{% load staticfiles compress %}
+
+{% if dt_tbl.css_media %}
+    {% compress css %}
+        {% for media, stls in dt_tbl.css_media.items %}
+            {% for s in stls %}
+                <link href="{% static s %}" rel="stylesheet" media="{{ media }}" />
+            {% endfor %}
+        {% endfor %}
+    {% endcompress %}
+{% endif %}

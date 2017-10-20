@@ -1,0 +1,22 @@
+.fw-layout {
+    margin: 15px 0 15px 0;
+}
+
+.fw-itm {
+    margin-bottom: 10px;
+}
+
+.fw-itm-label {
+    font-weight: 700;
+    width: 150px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.fw-itm-content {
+    display: inline-block;
+}
+
+.fw-row {
+    min-height: 20px;
+}

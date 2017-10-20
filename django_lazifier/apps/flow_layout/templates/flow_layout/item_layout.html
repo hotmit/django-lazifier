@@ -1,0 +1,14 @@
+{% load i18n tz lazifier_filters %}
+
+{% autoescape on %}
+    {% localtime on %}
+        <div{{ itm.tags_string }}>
+            {% if itm.field_name %}
+                <span{{ itm.label_html.tags_string }}>{{ label }}{{ label_postfix }}</span>
+                <span{{ itm.content_html.tags_string }}>
+                    {{ content|apply_filter:itm.filter|default:'-' }}
+                </span>
+            {% endif %}
+        </div>
+    {% endlocaltime %}
+{% endautoescape %}
