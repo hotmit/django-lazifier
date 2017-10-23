@@ -28,6 +28,7 @@ window.DTbl = {
                 processing: gettext("Processing..."),
                 search: gettext("Search:"),
                 zeroRecords: gettext("No matching records found"),
+                stateSave: true,
                 paginate: {
                     first: gettext("First"),
                     last: gettext("Last"),

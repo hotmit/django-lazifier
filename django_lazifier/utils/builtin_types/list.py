@@ -84,11 +84,18 @@ class Lst:
     @classmethod
     def group_by(cls, the_list, group, none_value_label='None', flat=False):
         """
-        Put all
+        Group the list by the group specified.
+            eg. Lst.group_by(seats, 'zone.name', 'do not belong to a zone')
+                => { 'zone1': [seat1, seat2]
+                     'zone2': [seat7, seat8]
+                     'do not belong to a zone': [seat3, seat4, seat5]
+                   }
+
         :param the_list:
         :param group: {str} name of the attribute, support dot notation group_by(persons, 'contact.phone')
         :param none_value_label: the value of the column specified is None then use this label as the key.
-        :return:
+        :param flat: if true only take the last item for each group and put it in the result dict
+        :rtype: dict
         """
         result = OrderedDict()
         for row in the_list:
