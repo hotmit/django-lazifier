@@ -1,4 +1,4 @@
-{% load i18n staticfiles tz compress %}
+{% load i18n staticfiles tz %}
 {% load lazifier_filters lazifier_tags data_table_filters %}
 
 {% autoescape on %}
@@ -119,10 +119,8 @@
     {% endblock %}
 
     {% if dt_tbl.js_media %}
-        {% compress js %}
-            {% for js in dt_tbl.js_media %}
-                <script src="{% static js %}"></script>
-            {% endfor %}
-        {% endcompress %}
+        {% for js in dt_tbl.js_media %}
+            <script src="{% static js %}"></script>
+        {% endfor %}
     {% endif %}
 {% endautoescape %}
