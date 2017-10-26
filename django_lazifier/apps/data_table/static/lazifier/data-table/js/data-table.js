@@ -11,7 +11,8 @@ window.DTbl = {
     }
 };
 
-(function ($) {
+(function (global, $) {
+    "use strict";
 
     // region [ initializeJsDataTable ]
     DTbl.initializeJsDataTable = function(region) {
@@ -187,7 +188,8 @@ window.DTbl = {
             var data = $.extend({}, uriSearch, $(this).data(), { mode: 'create' }), ajaxOptions = {
                     url: 'manage/',
                     method: 'GET',
-                    data: data
+                    data: data,
+                    traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(gettext('Create New'), ajaxOptions, dialogOptions, function(){
                     UI.Patterns.submitForm('form#frm-dt-create', '.dt-ajax-container', null, null, $dialog);
                 });
@@ -197,7 +199,8 @@ window.DTbl = {
             var data = $.extend({}, uriSearch, $(this).data(), { id: $(this).data('id'), mode: 'update' }), ajaxOptions = {
                     url: 'manage/',
                     method: 'GET',
-                    data: data
+                    data: data,
+                    traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(gettext('Update'), ajaxOptions, dialogOptions, function(){
                     UI.Patterns.submitForm('form#frm-dt-update', '.dt-ajax-container', null, null, $dialog);
                 });
@@ -207,7 +210,8 @@ window.DTbl = {
             var $btn = $(this), data = $.extend({}, uriSearch, $btn.data(), {
                 id: $btn.data('id'),
                 mode: 'delete',
-                csrfmiddlewaretoken: $.cookie('csrftoken')
+                csrfmiddlewaretoken: $.cookie('csrftoken'),
+                traditional: true
             });
 
             UI.Bs.confirmYesNo(gettext('Are you sure you want to delete this record?'),
@@ -216,7 +220,8 @@ window.DTbl = {
                         var ajaxOptions = {
                             url: 'manage/',
                             method: 'POST',
-                            data: data
+                            data: data,
+                            traditional: true
                         };
 
                         UI.Patterns.submitAjaxRequest(ajaxOptions);
@@ -226,13 +231,31 @@ window.DTbl = {
         });
 
         $body.on('click', '.dt-action-btn.dt-modal-dialog', function(){
+            /**
+             * Call the data-format function to format the ajax data
+             *
+             * @param $actionBtn - the action button
+             * @param ajaxData - the original ajax data object
+             * @rtype {object}
+             */
+            function applyDataFormatter($actionBtn, ajaxData){
+                var dataFormatterFunc = $actionBtn.data('data-formatter');
+
+                if (dataFormatterFunc){
+                    delete ajaxData['dataFormatter'];
+                    return Fn.callByName(dataFormatterFunc, global, $actionBtn, ajaxData);
+                }
+                return ajaxData;
+            }
+
             var $btn = $(this),
                 data = $.extend({}, uriSearch, $btn.data(), { mode: 'custom' }),
                 btnDialogOption = getDialogOption($btn) || dialogOptions,
                 ajaxOptions = {
                     url: $btn.data('url') || 'manage/',
                     method: 'GET',
-                    data: data
+                    data: applyDataFormatter($btn, data),
+                    traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(btnDialogOption.title || '', ajaxOptions, btnDialogOption,
                     function(){
                         UI.Patterns.submitForm('.dt-ajax-container form', '.dt-ajax-container',
@@ -246,7 +269,8 @@ window.DTbl = {
                 ajaxOptions = {
                     url: $btn.data('url') || 'manage/',
                     method: 'POST',
-                    data: data
+                    data: data,
+                    traditional: true
                 };
 
             function _submitRequest(){
@@ -259,7 +283,6 @@ window.DTbl = {
 
                 delete data.confirm;
                 delete data.confirmMsg;
-
 
                 UI.Bs.confirmYesNo(confirmMsg,
                     function(result){
@@ -278,4 +301,5 @@ window.DTbl = {
     });
     // endregion
 
-}(jQuery));
+}(typeof window !== 'undefined' ? window : this, jQuery));
+

@@ -39,4 +39,12 @@ make sure:  modal_dialog is NOT True,   is_link is NOT True
 is_link => set this to True
 link_url => specify the link, if it's a dynamic link use get_link lambda below
 get_link($btn, $row) => lambda to generate link on the fly
+
+
+
+// js_data_formatter
+function <data_formatter_func>($actionButton, $ajaxData){
+    return modifiedDataObj;
+}
+specify the global function name for the ajax function pass the data to before submitting
 ```

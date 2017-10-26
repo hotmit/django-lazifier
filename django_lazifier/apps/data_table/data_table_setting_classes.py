@@ -27,7 +27,8 @@ class DtActionButton:
 
     def __init__(self, button_text, command, permission, icon_class, add_css_classes: list=None, modal_dialog=False,
                  bs_dialog_title='', is_link=False, link_url='', attrs=None, can_display=None, get_link=None,
-                 button_css='btn btn-primary btn-xs', js_confirm=False, js_confirm_msg=None, **data):
+                 button_css='btn btn-primary btn-xs', js_confirm=False, js_confirm_msg=None, js_data_formatter=None,
+                 **data):
         """
         See data_table/README.md
         """
@@ -56,6 +57,9 @@ class DtActionButton:
             'command': command,
             'bs_dialog_title': bs_dialog_title,
         })
+
+        if js_data_formatter:
+            self.data['data_formatter'] = js_data_formatter
 
         if js_confirm:
             self.data['confirm'] = 'yes'
