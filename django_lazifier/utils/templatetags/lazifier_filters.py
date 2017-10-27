@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from collections import OrderedDict
 from django_lazifier.utils.builtin_types.list import Lst
+from django_lazifier.utils.builtin_types.num import Num
 from django_lazifier.utils.builtin_types.obj import Obj
 from django_lazifier.utils.builtin_types.str import Str
 from django_lazifier.utils.django.model import Mdl
@@ -623,4 +624,4 @@ def has_perm(user, perm):
 
 @register.filter
 def as_money(amount):
-    return '${:.2f}'.format(amount).rstrip('0').rstrip('.')
+    return Num.as_money(amount)

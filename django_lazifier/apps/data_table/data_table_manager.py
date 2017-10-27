@@ -262,7 +262,7 @@ class DataTableManager(DataTablePermissions):
                     form = self.get_create_form(*form_args, **form_kwargs)
                     return self.render_form(form)
 
-                form = self.get_create_form(self.request.POST, self.request.FILES, *form_args, **form_kwargs)
+                form = self.get_create_form(data=self.request.POST, files=self.request.FILES, *form_args, **form_kwargs)
                 if form.is_valid():
                     result = True
                     if self.override_on_create is None:
