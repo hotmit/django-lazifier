@@ -189,9 +189,10 @@ window.DTbl = {
                     url: 'manage/',
                     method: 'GET',
                     data: data,
+                    dataType: 'html',
                     traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(gettext('Create New'), ajaxOptions, dialogOptions, function(){
-                    UI.Patterns.submitForm('form#frm-dt-create', '.dt-ajax-container', null, null, $dialog);
+                    UI.Patterns.submitForm('form.dt-ajax-form', '.dt-ajax-container', null, null, $dialog);
                 });
         });
 
@@ -200,9 +201,10 @@ window.DTbl = {
                     url: 'manage/',
                     method: 'GET',
                     data: data,
+                    dataType: 'html',
                     traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(gettext('Update'), ajaxOptions, dialogOptions, function(){
-                    UI.Patterns.submitForm('form#frm-dt-update', '.dt-ajax-container', null, null, $dialog);
+                    UI.Patterns.submitForm('form.dt-ajax-form', '.dt-ajax-container', null, null, $dialog);
                 });
         });
 
@@ -211,6 +213,7 @@ window.DTbl = {
                 id: $btn.data('id'),
                 mode: 'delete',
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
+                dataType: 'html',
                 traditional: true
             });
 
@@ -221,6 +224,7 @@ window.DTbl = {
                             url: 'manage/',
                             method: 'POST',
                             data: data,
+                            dataType: 'html',
                             traditional: true
                         };
 
@@ -255,10 +259,11 @@ window.DTbl = {
                     url: $btn.data('url') || 'manage/',
                     method: 'GET',
                     data: applyDataFormatter($btn, data),
+                    dataType: 'html',
                     traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(btnDialogOption.title || '', ajaxOptions, btnDialogOption,
                     function(){
-                        UI.Patterns.submitForm('.dt-ajax-container form', '.dt-ajax-container',
+                        UI.Patterns.submitForm('form.dt-ajax-form', '.dt-ajax-container',
                             null, null, $dialog);
                     });
         });
@@ -270,6 +275,7 @@ window.DTbl = {
                     url: $btn.data('url') || 'manage/',
                     method: 'POST',
                     data: data,
+                    dataType: 'html',
                     traditional: true
                 };
 

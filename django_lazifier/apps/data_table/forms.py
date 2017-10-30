@@ -23,7 +23,10 @@ class DataTableBaseForm(forms.Form):
             self.request = request
 
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
+        helper = FormHelper()
+        helper.form_class = 'dt-ajax-form'
+
+        self.helper = helper
 
     def setup_flow_layout(self):
         Frm.set_flow_layout(self, self.flow_layout, strict=self.strict_flow_layout)
