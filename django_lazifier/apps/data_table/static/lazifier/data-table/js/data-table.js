@@ -1,4 +1,4 @@
-/*global jQuery, UI, gettext, document, Str */
+/*global jQuery, UI, gettext, document, Str, Utl */
 
 window.DTbl = {
     locale: 'en',
@@ -7,7 +7,8 @@ window.DTbl = {
     timeFormat: 'HH:mm',
 
     refreshDataTable: function(content, ajaxCommand){
-        DTbl.initialize(ajaxCommand.options.localTarget);
+        var region = Utl.getAttr(ajaxCommand, 'options.localTarget', 'body');
+        DTbl.initialize(region);
     }
 };
 
@@ -171,6 +172,29 @@ window.DTbl = {
     $(function () {
         var $body = $(document.body), $dtTable = $('.dt-list-view table'), dialogOptions = {}, uriSearch;
 
+        /**
+         * Call the data-format function to format the ajax data
+         *
+         * @param $theElement - the html element (eg. the action button)
+         * @param ajaxData - the original ajax data object
+         * @rtype {object}
+         */
+        function applyDataFormatter($theElement, ajaxData){
+            var dataFormatterFunc = $theElement.data('data-formatter');
+
+            if (dataFormatterFunc){
+                delete ajaxData['dataFormatter'];
+                return Fn.callByName(dataFormatterFunc, global, $theElement, ajaxData);
+            }
+            return ajaxData;
+        }
+
+        /**
+         * Get the bs dialog options from the data attrs from the source element.
+         *
+         * @param $src - the html element
+         * @rtype: {object}
+         */
         function getDialogOption($src){
             var opts = {};
             $.each($src.data(), function(key, value){
@@ -185,10 +209,10 @@ window.DTbl = {
         uriSearch = new URI().search(true);
 
         $body.on('click', '.btn-dt-create', function(){
-            var data = $.extend({}, uriSearch, $(this).data(), { mode: 'create' }), ajaxOptions = {
+            var $this = $(this), data = $.extend({}, uriSearch, $this.data(), { mode: 'create' }), ajaxOptions = {
                     url: 'manage/',
                     method: 'GET',
-                    data: data,
+                    data: applyDataFormatter($this, data),
                     dataType: 'html',
                     traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(gettext('Create New'), ajaxOptions, dialogOptions, function(){
@@ -197,10 +221,10 @@ window.DTbl = {
         });
 
         $body.on('click', '.btn-dt-edit', function(){
-            var data = $.extend({}, uriSearch, $(this).data(), { id: $(this).data('id'), mode: 'update' }), ajaxOptions = {
+            var $this = $(this), data = $.extend({}, uriSearch, $this.data(), { id: $this.data('id'), mode: 'update' }), ajaxOptions = {
                     url: 'manage/',
                     method: 'GET',
-                    data: data,
+                    data: applyDataFormatter($this, data),
                     dataType: 'html',
                     traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(gettext('Update'), ajaxOptions, dialogOptions, function(){
@@ -209,8 +233,8 @@ window.DTbl = {
         });
 
         $body.on('click', '.btn-dt-delete', function(){
-            var $btn = $(this), data = $.extend({}, uriSearch, $btn.data(), {
-                id: $btn.data('id'),
+            var $this = $(this), data = $.extend({}, uriSearch, $this.data(), {
+                id: $this.data('id'),
                 mode: 'delete',
                 csrfmiddlewaretoken: $.cookie('csrftoken'),
                 dataType: 'html',
@@ -223,7 +247,7 @@ window.DTbl = {
                         var ajaxOptions = {
                             url: 'manage/',
                             method: 'POST',
-                            data: data,
+                            data: applyDataFormatter($this, data),
                             dataType: 'html',
                             traditional: true
                         };
@@ -235,30 +259,13 @@ window.DTbl = {
         });
 
         $body.on('click', '.dt-action-btn.dt-modal-dialog', function(){
-            /**
-             * Call the data-format function to format the ajax data
-             *
-             * @param $actionBtn - the action button
-             * @param ajaxData - the original ajax data object
-             * @rtype {object}
-             */
-            function applyDataFormatter($actionBtn, ajaxData){
-                var dataFormatterFunc = $actionBtn.data('data-formatter');
-
-                if (dataFormatterFunc){
-                    delete ajaxData['dataFormatter'];
-                    return Fn.callByName(dataFormatterFunc, global, $actionBtn, ajaxData);
-                }
-                return ajaxData;
-            }
-
-            var $btn = $(this),
-                data = $.extend({}, uriSearch, $btn.data(), { mode: 'custom' }),
-                btnDialogOption = getDialogOption($btn) || dialogOptions,
+            var $this = $(this),
+                data = $.extend({}, uriSearch, $this.data(), { mode: 'custom' }),
+                btnDialogOption = getDialogOption($this) || dialogOptions,
                 ajaxOptions = {
-                    url: $btn.data('url') || 'manage/',
+                    url: $this.data('url') || 'manage/',
                     method: 'GET',
-                    data: applyDataFormatter($btn, data),
+                    data: applyDataFormatter($this, data),
                     dataType: 'html',
                     traditional: true
                 }, $dialog = UI.Patterns.bsDialogAjax(btnDialogOption.title || '', ajaxOptions, btnDialogOption,
@@ -269,12 +276,12 @@ window.DTbl = {
         });
 
         $body.on('click', '.dt-action-btn.dt-action-command', function(){
-            var $btn = $(this),
-                data = $.extend({}, $btn.data(), { mode: 'custom', csrfmiddlewaretoken: $.cookie('csrftoken') }),
+            var $this = $(this),
+                data = $.extend({}, $this.data(), { mode: 'custom', csrfmiddlewaretoken: $.cookie('csrftoken') }),
                 ajaxOptions = {
-                    url: $btn.data('url') || 'manage/',
+                    url: $this.data('url') || 'manage/',
                     method: 'POST',
-                    data: data,
+                    data: applyDataFormatter($this, data),
                     dataType: 'html',
                     traditional: true
                 };

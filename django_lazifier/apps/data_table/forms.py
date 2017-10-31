@@ -115,6 +115,7 @@ class DataTableCreateForm(DataTableBaseForm, forms.ModelForm):
         helper.form_method = 'POST'
         helper.form_action = 'manage/?mode=create'
         helper.form_id = 'frm-dt-create'
+        helper.form_class = 'dt-ajax-form'
         helper.add_input(Button('ajax-reset', _('Reset'), css_class='btn btn-warning ajax-reset'))
         helper.add_input(Submit('submit', _('Create')))
 
@@ -133,6 +134,7 @@ class DataTableUpdateForm(DataTableCreateForm):
         helper.form_method = 'POST'
         helper.form_action = 'manage/?mode=update'
         helper.form_id = 'frm-dt-update'
+        helper.form_class = 'dt-ajax-form'
         helper.add_input(Button('ajax-reset', _('Reset'), css_class='btn btn-warning ajax-reset'))
         helper.add_input(Submit('submit', _('Update')))
 

@@ -11,6 +11,7 @@ class Ajx:
         none = 'none'
         bs_dialog = 'bs-dialog'
         block_ui = 'block-ui'
+        toastr = 'toastr'
         alert = 'alert'
 
     class Status:
