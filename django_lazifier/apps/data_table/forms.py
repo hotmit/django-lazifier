@@ -23,14 +23,20 @@ class DataTableBaseForm(forms.Form):
             self.request = request
 
         super().__init__(*args, **kwargs)
-        helper = FormHelper()
-        helper.form_class = 'dt-ajax-form'
-
-        self.helper = helper
+        self.init_dt_helper(self)
 
     def setup_flow_layout(self):
         Frm.set_flow_layout(self, self.flow_layout, strict=self.strict_flow_layout)
 
+    @classmethod
+    def init_dt_helper(cls, form):
+        """
+
+        """
+        helper = getattr(form, 'helper', FormHelper())
+        if 'dt-ajax-form' not in helper.form_class:
+            helper.form_class += ' dt-ajax-form'
+        form.helper = helper
 
 class DataTableBaseFilterForm(DataTableBaseForm):
 
