@@ -3,6 +3,15 @@
 
 {% autoescape on %}
     {% block dt_list_header %}
+
+    {% endblock %}
+
+    {% block dt_css_media_loader %}
+        {% if dt_tbl.css_media %}
+            {% for css_src in dt_tbl.css_media %}
+                <link href="{% static css_src %}" rel="stylesheet" />
+            {% endfor %}
+        {% endif %}
     {% endblock %}
 
     {% if dt_tbl.perms.can_view or dt_tbl.perms.can_manage or dt_tbl.display.cmd_buttons %}
@@ -118,9 +127,11 @@
     {% block dt_list_footer %}
     {% endblock %}
 
-    {% if dt_tbl.js_media %}
-        {% for js in dt_tbl.js_media %}
-            <script src="{% static js %}"></script>
-        {% endfor %}
-    {% endif %}
+    {% block dt_js_media_loader %}
+        {% if dt_tbl.js_media %}
+            {% for js_src in dt_tbl.js_media %}
+                <script src="{% static js_src %}"></script>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
 {% endautoescape %}
