@@ -1,0 +1,219 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-20 11:57-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\django_lazifier\abstract_models\models.py:44
+msgid "created"
+msgstr ""
+
+#: .\django_lazifier\abstract_models\models.py:45
+msgid "last modified"
+msgstr ""
+
+#: .\django_lazifier\abstract_models\models.py:54
+msgid "enabled"
+msgstr ""
+
+#: .\django_lazifier\abstract_models\models.py:63
+msgid "is active"
+msgstr ""
+
+#: .\django_lazifier\abstract_models\models.py:72
+msgid "owner"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table.py:324
+msgid "No records found."
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table.py:325
+#: .\django_lazifier\utils\django\form.py:33
+#: .\django_lazifier\utils\django\form.py:55
+msgid "Sorry, you do not have the permission to view this page."
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table.py:326
+msgid "New"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table.py:327
+msgid "Edit"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table.py:328
+msgid "Delete"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table.py:329
+msgid "Actions"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:169
+msgid "The record you specified does not exist."
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:170
+msgid "Sorry, you do not have the permission to create this record."
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:171
+msgid "Sorry, you do not have the permission to update this record."
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:172
+msgid "Sorry, you do not have the permission to delete this record."
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\data_table_manager.py:334
+msgid "Dev Error: un-implemented mode or command ({mode}/{command})"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:7
+#: .\django_lazifier\utils\contants\choices.py:5
+msgid "Male"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:8
+#: .\django_lazifier\utils\contants\choices.py:6
+msgid "Female"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:13
+msgid "name"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:14
+msgid "description"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:15
+msgid "user"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:17
+msgid "gender"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:18
+msgid "pin"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:20
+msgid "modified timestamped"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:24
+msgid "Data Table Demo"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:26
+msgid "View Demo App"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:27
+msgid "Update Demo App"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:28
+msgid "Delete Demo App"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\models.py:29
+msgid "Manage Demo App"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Name"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "User"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Gender"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Pins"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\demo_app\views.py:62
+msgid "Date Modified"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\forms.py:44
+msgid "Search"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\forms.py:64
+msgid "Start Date"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\forms.py:65
+msgid "End Date"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\forms.py:94
+msgid "Status"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\forms.py:115
+#: .\django_lazifier\apps\data_table\forms.py:133
+msgid "Reset"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\forms.py:116
+msgid "Create"
+msgstr ""
+
+#: .\django_lazifier\apps\data_table\forms.py:134
+msgid "Update"
+msgstr ""
+
+#: .\django_lazifier\utils\contants\choices.py:7
+msgid "Other"
+msgstr ""
+
+#: .\django_lazifier\utils\contants\choices.py:12
+#: .\django_lazifier\utils\contants\choices.py:23
+msgid "All"
+msgstr ""
+
+#: .\django_lazifier\utils\contants\choices.py:17
+msgid "Active"
+msgstr ""
+
+#: .\django_lazifier\utils\contants\choices.py:18
+msgid "Inactive"
+msgstr ""
+
+#: .\django_lazifier\utils\django\ajax.py:155
+msgid "Error"
+msgstr ""
+
+#: .\django_lazifier\utils\django\form.py:67
+msgid "Sorry, the record you specified does not exist."
+msgstr ""
+
+#: .\django_lazifier\utils\templates\lazifier\table_filter\as_table_filter_sub_tables_layout.html:7
+msgid "Key"
+msgstr ""
+
+#: .\django_lazifier\utils\templates\lazifier\table_filter\as_table_filter_sub_tables_layout.html:8
+msgid "Value"
+msgstr ""

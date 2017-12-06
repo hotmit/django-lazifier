@@ -1,0 +1,27 @@
+{% load i18n lazifier_filters %}
+
+{% autoescape on %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">{% trans 'Key'|force_escape %}</th>
+                <th scope="col">{% trans 'Value'|force_escape %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, table in sub_tables.items %}
+                <tr>
+                    <th scope="row">{{ key }}</th>
+                    <td>
+                        {{ table }}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <th scope="row"></th>
+                    <td colspan="100">-</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endautoescape %}

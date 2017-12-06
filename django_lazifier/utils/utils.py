@@ -10,10 +10,31 @@ import os
 import re
 import pytz
 import shutil
-from django_lazifier.utils.builtin_types.datetime import Dt
-from django_lazifier.utils.builtin_types.dict import Dct
-from django_lazifier.utils.builtin_types.obj import Obj
-from django_lazifier.utils.json.json_encoder import JsonEncoder
+
+
+try:
+    from django_lazifier.utils.json.json_encoder import JsonEncoder
+except Exception:
+    pass
+
+
+try:
+    from django_lazifier.utils.builtin_types.dict import Dct
+except Exception:
+    pass
+
+
+try:
+    from django_lazifier.utils.builtin_types.datetime import Dt
+except Exception:
+    pass
+
+
+try:
+    from django_lazifier.utils.builtin_types.obj import Obj
+except Exception:
+    pass
+
 
 try:
     from django.db.models.query import ValuesQuerySet
@@ -24,6 +45,7 @@ except Exception as ex:
 def log_exception(exception):
     if settings and settings.DEBUG:
         p('Exception: %s' % exception)
+
 
 # region [ Print Function ]
 def d(obj, header='', indent=2, **kwargs):

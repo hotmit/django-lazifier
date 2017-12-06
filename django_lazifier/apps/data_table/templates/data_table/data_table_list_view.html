@@ -1,0 +1,137 @@
+{% load i18n staticfiles tz %}
+{% load lazifier_filters lazifier_tags data_table_filters %}
+
+{% autoescape on %}
+    {% block dt_list_header %}
+
+    {% endblock %}
+
+    {% block dt_css_media_loader %}
+        {% if dt_tbl.css_media %}
+            {% for css_src in dt_tbl.css_media %}
+                <link href="{% static css_src %}" rel="stylesheet" />
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+
+    {% if dt_tbl.perms.can_view or dt_tbl.perms.can_manage or dt_tbl.display.cmd_buttons %}
+        <div class="dt-list-view">
+            {% if dt_tbl.options.show_command_buttons %}
+                <div class="dt-cmd-buttons">
+                    {% block dt_cmd_button_display %}
+                        {% for dt_btn in dt_tbl.display.cmd_buttons %}
+                            {{ dt_btn|make_action_button:0 }}
+                        {% endfor %}
+                    {% endblock %}
+
+                    {% block dt_command_buttons %}
+                        {% if dt_tbl.perms.can_create or dt_tbl.perms.can_manage %}
+                            <button class="btn btn-primary btn-sm btn-dt-create" title="{{ dt_tbl.i18n.add_new }}">
+                                <span class="glyphicon glyphicon-plus"></span> {{ dt_tbl.i18n.add_new }}
+                            </button>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            {% endif %}
+
+            {% block dt_table %}
+                {% autoescape on %}
+                    <table{% if dt_tbl.options.table_id %} id="{{ dt_tbl.options.table_id }}"{% endif %}
+                            class="table{% if dt_tbl.js_data_table.enable %} dt-table{% endif %}{% if dt_tbl.js_data_table.paging %} paging{% endif %}{% if dt_tbl.options.table_classes %} {{ dt_tbl.options.table_classes }}{% endif %}"
+                            data-order='{{ dt_tbl.js_data_table.default_order }}'
+                            {{ dt_tbl.options.table_data_attr.data_string }}>
+                        <thead>
+                            <tr>
+                                {% block dt_table_header %}
+                                    {% for dt_header in dt_tbl.display.col_titles %}
+                                        <th scope="col"
+                                                {% if forloop.counter0 in dt_tbl.js_data_table.no_search_columns %}
+                                                    data-searchable="false"
+                                                {% endif %}
+                                                {% if forloop.counter0 in dt_tbl.js_data_table.no_sort_columns %}
+                                                    data-orderable="false"
+                                                {% endif %}>{{ dt_header }}</th>
+                                    {% endfor %}
+
+                                    {% if dt_tbl.perms.can_manage or  dt_tbl.perms.can_update or dt_tbl.perms.can_delete or dt_tbl.display.action_buttons %}
+                                        <th scope="col" data-orderable="false" data-searchable="false">{{ dt_tbl.i18n.action }}</th>
+                                    {% endif %}
+                                {% endblock %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dt_row in dt_tbl.data %}
+                                <tr data-id="{{ dt_row.id }}">
+
+                                    {% block dt_row_display %}
+                                        {% for dt_field in dt_tbl.display.col_fields %}
+                                            {% with dt_tbl.display.formats|get_attr:forloop.counter0 as filter_list %}
+                                                <td>{{ dt_row|get_dt_col_value:dt_field|apply_filter:filter_list|default_if_none:'-' }}</td>
+                                            {% endwith %}
+                                        {% endfor %}
+                                    {% endblock %}
+
+                                    {% block dt_buttons %}
+                                        {% if dt_tbl.perms.can_manage or dt_tbl.perms.can_update or dt_tbl.perms.can_delete or dt_tbl.display.action_buttons %}
+                                            <td class="dt-action-btns">
+                                                {% if dt_tbl.perms.can_manage or dt_tbl.perms.can_delete %}
+                                                    <button class="btn btn-primary btn-xs btn-dt-delete" data-id="{{ dt_row.id }}" title="{{ dt_tbl.i18n.delete }}">
+                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                    </button>
+                                                {% endif %}
+
+                                                {% if dt_tbl.perms.can_manage or dt_tbl.perms.can_update %}
+                                                    <button class="btn btn-primary btn-xs btn-dt-edit" data-id="{{ dt_row.id }}" title="{{ dt_tbl.i18n.edit }}">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </button>
+                                                {% endif %}
+
+                                                {% block dt_row_action_button_display %}
+                                                    {% for dt_btn in dt_tbl.display.action_buttons %}
+                                                        {% if dt_btn|can_display_button:dt_row %}
+                                                            {{ dt_btn|make_action_button:dt_row }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endblock %}
+                                            </td>
+                                        {% endif %}
+                                    {% endblock %}
+                                </tr>
+                                {% block dt_row2_display %}
+                                {% endblock %}
+                            {% empty %}
+                                <tr>
+                                    <td colspan="100">
+                                        {% block dt_not_found %}
+                                            {{ dt_tbl.i18n.not_found }}
+                                        {% endblock %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% block dt_table_footer %}
+
+                        {% endblock %}
+                    </table>
+                {% endautoescape %}
+            {% endblock %}
+        </div>
+    {% else %}
+        {% block dt_no_perm_to_view %}
+            <div class="alert alert-warning" role="alert">
+                <span>{{ dt_tbl.i18n.no_perm_to_view }}</span>
+            </div>
+        {% endblock %}
+    {% endif %}
+
+    {% block dt_list_footer %}
+    {% endblock %}
+
+    {% block dt_js_media_loader %}
+        {% if dt_tbl.js_media %}
+            {% for js_src in dt_tbl.js_media %}
+                <script src="{% static js_src %}"></script>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+{% endautoescape %}
