@@ -74,3 +74,19 @@ Tools used in rendering this package:
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
+
+
+
+Build Package
+-------------
+
+Ref: http://python-packaging-user-guide.readthedocs.io/en/latest/requirements/#install-requires
+
+python setup.py sdist       # build redistribution package (zip file)
+python setup.py develop     # install in virtual_env as a developer module
+
+Reference: https://docs.djangoproject.com/en/1.7/intro/reusable-apps/
+
+Eg.
+pip install --user django-polls/dist/django-polls-0.1.tar.gz
+pip uninstall django-polls
