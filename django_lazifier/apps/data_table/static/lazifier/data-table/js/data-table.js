@@ -297,6 +297,8 @@ window.DTbl = {
                 delete data.confirm;
                 delete data.confirmMsg;
 
+
+
                 UI.Bs.confirmYesNo(confirmMsg,
                     function(result){
                         if (result === true){
