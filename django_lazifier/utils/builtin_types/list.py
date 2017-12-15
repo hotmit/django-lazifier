@@ -349,3 +349,17 @@ class Lst:
             itm = str(itm)
             str_list.append(itm)
         return separator.join(str_list)
+
+    @classmethod
+    def chunks(cls, lst, chunk_size, pad_with=None):
+        """
+        Split the list into chunks.
+            eg. [1, 2, 3, 4, 5] (chunk == 2) => result [ [1, 2], [3, 4], [5] ]
+        """
+        result = []
+        for i in range(0, len(lst), chunk_size):
+            result.append(lst[i:i + chunk_size])
+
+        if result and pad_with is not None and len(result[-1]) != chunk_size:
+            result[-1] = result[-1] + ([pad_with] * (chunk_size - len(result[-1])))
+        return result
