@@ -3,7 +3,7 @@ from decimal import Decimal
 import re
 from django.conf import settings
 from django.template import defaultfilters
-
+import itertools
 
 try:
     from django_lazifier.utils.utils import p
@@ -368,3 +368,46 @@ class Str:
             return the_str
         the_str = cls.break_camel(the_str)
         return the_str.lower().replace(' ', '_')
+
+    @classmethod
+    def _successor(cls, text, increment, range: dict):
+        pass
+
+    @classmethod
+    def successor(cls, input, increment: int, case_sensitive=True, end_at='z'):
+        """
+        Increase value of a string similarly to a int value.
+            Ordering: 0..9A..Za..z
+
+            eg. 'aaa' + 1 => 'aab'
+                'aaz' + 1 => 'ab0'
+
+        :type input: {str|int|float}
+        :param input: the text to increment
+        :param increment: the amount of offset to shift
+        :param case_sensitive: if case_sensitive is False the range becomes 0..9A..Z.
+                                   eg. if False '2Z' + 1 => '30', if True '2Z' + 1 => '2a' (Z continue to a)
+        :param end_at: let say you want to increase hex number you want end_at to be 'F'.
+                            eg. if you want integer addition only, then set end_at to '9'.
+        :return:
+        """
+        if isinstance(input, int) or  isinstance(input, float):
+            return input + 1
+
+        if not input:
+            return '0'
+
+        input = str(input)
+        end_at = end_at[0]
+
+        if not case_sensitive:
+            end_at = end_at.upper()
+
+        range = itertools.chain(range(48, 58), range(65, 91), range(97, 123))
+
+        raise Exception('Not implemented yet!')
+
+
+
+
+

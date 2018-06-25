@@ -4,6 +4,7 @@ from dateutil.parser import parse
 from django.db.models import Model
 from django_lazifier.utils.builtin_types.iter import IterBase
 from django_lazifier.utils.builtin_types.obj import Obj
+from django_lazifier.utils.builtin_types.str import Str
 
 
 class NumSeed(IterBase):
@@ -73,18 +74,43 @@ class DateSeed(DateTimeSeed):
 
 
 class ListSeed(IterBase):
-    def __init__(self, items: list):
-        if isinstance(items, tuple) and len(items) > 0:
+    def __init__(self, *items, random=True):
+        """
+        :param items: accept list or list of tuple (eg. the choices value)
+        """
+        if len(items) > 0:
             # for choice tuple
             items = list(items)
             if isinstance(items[0], tuple):
                 items = list(dict(items).keys())
 
         self.items = items or []
-        self._len = len(self.items)
+
+        self.random = random
+        if not random:
+            self.index = 0
 
     def next(self):
-        return self.items[random.randrange(0, self._len)]
+        if self.random:
+            return self.items[random.randrange(0, len(self))]
+        value = self.items[self.index]
+        self.index = self.index + 1
+        if self.index >= len(self):
+            self.index = 0
+        return value
+
+
+class StringSeed(IterBase):
+    def __init__(self, prefix, index=1, postfix=''):
+        self.prefix = prefix
+        self.index = index
+        self.postfix = postfix
+
+    def next(self):
+        new_str = '{prefix}{index}{postfix}'.format(prefix=self.prefix, index=self.index, postfix=self.postfix)
+        self.index = Str.successor(input=self.index, increment=1, case_sensitive=True, )
+        return new_str
+
 
 
 class TextSeed(IterBase):
@@ -143,9 +169,9 @@ class Seed:
         return param_values
 
     def create(self, manager: str = None):
-        model_manager = self.model.objects
-        if manager:
-            model_manager = Obj.getattr(self.model, manager)
+        if not manager:
+            manager = 'objects'
+        model_manager = Obj.getattr(self.model, manager)
 
         for i in range(self.qty):
             record = self.model(**self._get_values())

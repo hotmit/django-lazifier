@@ -92,14 +92,18 @@ class Lst:
                    }
 
         :param the_list:
-        :param group: {str} name of the attribute, support dot notation group_by(persons, 'contact.phone')
+        :param group: {str|def} name of the attribute, support dot notation group_by(persons, 'contact.phone')
         :param none_value_label: the value of the column specified is None then use this label as the key.
         :param flat: if true only take the last item for each group and put it in the result dict
         :rtype: dict
         """
         result = OrderedDict()
         for row in the_list:
-            col_value = Obj.getattr(row, group, None)
+            if callable(group):
+                col_value = group(row)
+            else:
+                col_value = Obj.getattr(row, group, None)
+
             if col_value is None:
                 col_value = none_value_label
 
@@ -225,7 +229,7 @@ class Lst:
         return False
 
     @classmethod
-    def prep_select_optgroups(cls, the_list, opt_groups: list, value_attr, display_attr, none_value_label):
+    def prep_select_optgroups(cls, the_list, opt_groups: list, value_attr, display_attr, none_value_label, sort_result=False):
         """
         Prep list to be use as a choice for the ChoiceField
 
@@ -250,6 +254,8 @@ class Lst:
                 result.append((og_header, tuple(og_list),))
             return tuple(result)
 
+        if sort_result:
+            return sorted(groups)
         return groups
 
     @classmethod
@@ -362,4 +368,45 @@ class Lst:
 
         if result and pad_with is not None and len(result[-1]) != chunk_size:
             result[-1] = result[-1] + ([pad_with] * (chunk_size - len(result[-1])))
+        return result
+
+
+    @classmethod
+    def get_first(cls, the_list, default_value=None):
+        """
+        Get the first item of the list.
+
+        :param the_list:
+        :param default_value:
+        :return:
+        """
+        if the_list:
+            for itm in the_list:
+                return itm
+        return default_value
+
+    @classmethod
+    def map_to(cls, the_list, attribs: list, default_value=None, execute_callable=True):
+        """
+        Go through the list and extract the specified attributes
+
+        :param the_list:
+        :param attribs:
+        :type default_value: object|dict
+        :param default_value: either a value for all fields default or pass a dict to supply specific default value.
+        :return: List of value lists
+        """
+        result = []
+        if not the_list:
+            return result
+
+        for itm in the_list:
+            row = []
+            for att in attribs:
+                specific_default = default_value
+                if isinstance(default_value, dict) and att in default_value:
+                    specific_default = default_value.get(att, default_value)
+                value = Obj.getattr(itm, att, specific_default, execute_callable=execute_callable)
+                row.append(value)
+            result.append(row)
         return result

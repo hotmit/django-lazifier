@@ -34,6 +34,7 @@ def index_iter(iterable):
 
 class IterBase:
     def __iter__(self):
+        self.items = []
         return self
 
     def __next__(self):
@@ -41,3 +42,6 @@ class IterBase:
 
     def next(self):
         return True
+
+    def __len__(self):
+        return len(self.items)
